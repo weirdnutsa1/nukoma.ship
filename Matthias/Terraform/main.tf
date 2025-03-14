@@ -16,7 +16,7 @@ provider "azurerm" {
 # Create a resource group
 resource "azurerm_resource_group" "NUKOMASHIP" {
   name     = "nukoma.ship"
-  location = "West Europe"
+  location = "Germany North"
    tags = {
     owner = "matthias.leckel@redbull.com"
   }
@@ -46,8 +46,20 @@ resource "azurerm_subnet" "subnet1bymatthias" {
     name                          = "internalhiasip"
     subnet_id                     = azurerm_subnet.subnet1bymatthias.id
     private_ip_address_allocation = "Dynamic"
+    public_ip_address_id =  azurerm_public_ip.hiaspublicip.id
   }
+
+  
 }
+
+
+resource "azurerm_public_ip" "hiaspublicip" {
+  name                = "acceptanceTestPublicIp1"
+  resource_group_name = azurerm_resource_group.NUKOMASHIP.name
+  location            = azurerm_resource_group.NUKOMASHIP.location
+  allocation_method   = "Static"
+  }
+
 
 resource "azurerm_linux_virtual_machine" "hiasvm" {
   name                = "hias-machine"
@@ -56,7 +68,7 @@ resource "azurerm_linux_virtual_machine" "hiasvm" {
   size                = "Standard_F2"
   admin_username      = "adminuser"
   network_interface_ids = [
-    azurerm_network_interface.interalhiasni.id,
+    azurerm_network_interface.interalhiasni.id
   ]
 
   admin_ssh_key {

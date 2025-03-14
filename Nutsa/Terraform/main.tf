@@ -15,10 +15,10 @@ provider "azurerm" {
 
 # Create a resource group
 resource "azurerm_resource_group" "NUKOMASHIP" {
-  name     = "nukoma.ship"
+  name     = "nukoma.ship.1"
   location = "West Europe"
    tags = {
-    owner = "matthias.leckel@redbull.com"
+    owner = "nutsa.tsamalashvili@gmail.com"
   }
 
 }

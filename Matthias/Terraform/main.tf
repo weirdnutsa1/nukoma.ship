@@ -30,9 +30,49 @@ resource "azurerm_virtual_network" "hiasnet" {
   resource_group_name = azurerm_resource_group.NUKOMASHIP.name
 }
 
+
 resource "azurerm_subnet" "subnet1bymatthias" {
   name                 = "subnet1bymatthias"
   resource_group_name  = azurerm_resource_group.NUKOMASHIP.name
   virtual_network_name = azurerm_virtual_network.hiasnet.name
   address_prefixes     = ["10.252.1.0/24"]
+
+}
+  resource "azurerm_network_interface" "interalhiasni" {
+  name                = "example-nic"
+  location            = azurerm_resource_group.NUKOMASHIP.location
+  resource_group_name = azurerm_resource_group.NUKOMASHIP.name
+   ip_configuration {
+    name                          = "internalhiasip"
+    subnet_id                     = azurerm_subnet.subnet1bymatthias.id
+    private_ip_address_allocation = "Dynamic"
   }
+}
+
+resource "azurerm_linux_virtual_machine" "hiasvm" {
+  name                = "hias-machine"
+  resource_group_name = azurerm_resource_group.NUKOMASHIP.name
+  location            = azurerm_resource_group.NUKOMASHIP.location
+  size                = "Standard_F2"
+  admin_username      = "adminuser"
+  network_interface_ids = [
+    azurerm_network_interface.interalhiasni.id,
+  ]
+
+  admin_ssh_key {
+    username   = "adminuser"
+    public_key = file(".ssh/id_rsa.pub")
+  }
+
+  os_disk {
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
+  }
+
+  source_image_reference {
+    publisher = "Canonical"
+    offer     = "0001-com-ubuntu-server-jammy"
+    sku       = "22_04-lts"
+    version   = "latest"
+  }
+}

@@ -15,8 +15,9 @@ provider "azurerm" {
 
 # Create a resource group
 resource "azurerm_resource_group" "NUKOMASHIP" {
-  name     = "nukoma.ship"
+  name     = "nukoma_kostya.ship"
   location = "West Europe"
-
-}
+   tags = {
+    owner = "konstantin.mikhailovsky@redbull.com"
+  }
 

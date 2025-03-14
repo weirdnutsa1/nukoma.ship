@@ -14,7 +14,7 @@ provider "azurerm" {
 }
 
 # Create a resource group
-resource "azurerm_resource_group" "NUKOMASHIP" {
+resource "azurerm_resource_group" "NUKOMASHIP2" {
   name     = "nukoma.ship.kostya"
   location = "West Europe"
    tags = {
@@ -22,3 +22,17 @@ resource "azurerm_resource_group" "NUKOMASHIP" {
   }
 
 }
+
+resource "azurerm_virtual_network" "hiasnet" {
+  name                = "hias-vnet-2"
+  address_space       = ["10.252.0.0/16"]
+  location            = azurerm_resource_group.NUKOMASHIP2.location
+  resource_group_name = azurerm_resource_group.NUKOMASHIP2.name
+}
+
+resource "azurerm_subnet" "subnet1bykostya" {
+  name                 = "subnet1bykostya"
+  resource_group_name  = azurerm_resource_group.NUKOMASHIP2.name
+  virtual_network_name = azurerm_virtual_network.hiasnet.name
+  address_prefixes     = ["10.252.2.0/24"]
+  }

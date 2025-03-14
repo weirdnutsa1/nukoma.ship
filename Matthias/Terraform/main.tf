@@ -17,6 +17,9 @@ provider "azurerm" {
 resource "azurerm_resource_group" "NUKOMASHIP" {
   name     = "nukoma.ship"
   location = "West Europe"
+   tags = {
+    owner = "matthias.leckel@redbull.com"
+  }
 
 }
 
